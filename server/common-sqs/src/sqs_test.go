@@ -5,6 +5,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/sqs/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -54,4 +56,17 @@ func Test_RetriveQueueProperties(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.Equal(t, strings.Contains(res2, q), true)
+}
+
+func Test_SendMessage(t *testing.T) {
+	config := New(REGION)
+
+	url, _ := config.RetrieveQueue("ex-queue")
+	err := config.SendMessage("Hello World!", url, map[string]types.MessageAttributeValue{
+		"Author": {
+			DataType:    aws.String("String"),
+			StringValue: aws.String("leedonggyu"),
+		},
+	})
+	assert.Nil(t, err)
 }

@@ -79,6 +79,17 @@ func (config AWSConfig) RetrieveQueueProperty(queueName string) (string, error) 
 	return attr.Attributes[string(attrName)], nil
 }
 
+func (config AWSConfig) SendMessage(messageBody, queueURL string, attr map[string]types.MessageAttributeValue) error {
+
+	_, err := config.q.SendMessage(context.TODO(), &sqs.SendMessageInput{
+		QueueUrl:          &queueURL,
+		MessageBody:       &messageBody,
+		MessageAttributes: attr,
+	})
+
+	return err
+}
+
 func (config AWSConfig) CreateQueue() {
 	// Terraform 으로 대체
 	// Queue, FIFO_Queue, DeadLetter Queue
