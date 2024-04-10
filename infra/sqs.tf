@@ -16,8 +16,22 @@ resource "aws_sqs_queue" "queue" {
   ## 메시지 재전송 정책
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.dead_letter_queue.arn
-    maxReceiveCount     = 4 ## 총 4번 시도 한 후 Dead Letter Queue에 쌓임
+    maxReceiveCount     = 5 ## 총 4번 시도 한 후 Dead Letter Queue에 쌓임
   })
+
+  depends_on = [aws_sqs_queue.dead_letter_queue]
+
+  tags = {
+    Environment = "test"
+  }
+}
+
+################################### SQS Queue FIFO ############################
+## FIFO Queue는 DeadLetter 큐를 사용할 수 없음
+resource "aws_sqs_queue" "fifo-queue" {
+  name                        = "ex-queue.fifo"
+  fifo_queue                  = true
+  content_based_deduplication = true ## 메시지 중복 방지 (여러번 쌓여도 중복 제거됨)
 
   depends_on = [aws_sqs_queue.dead_letter_queue]
 
