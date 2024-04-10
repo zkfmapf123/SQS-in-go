@@ -39,3 +39,12 @@ resource "aws_sqs_queue" "fifo-queue" {
     Environment = "test"
   }
 }
+
+
+output "queue_url" {
+  value = {
+    dead_queue = aws_sqs_queue.dead_letter_queue.url
+    queue      = aws_sqs_queue.queue.url
+    fifo_queue = aws_sqs_queue.fifo-queue.url
+  }
+}
