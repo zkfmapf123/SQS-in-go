@@ -70,3 +70,35 @@ func Test_SendMessage(t *testing.T) {
 	})
 	assert.Nil(t, err)
 }
+
+func Test_SendBatchMessage(t *testing.T) {
+	config := New(REGION)
+
+	msgAttr := []types.SendMessageBatchRequestEntry{
+		{
+			Id:          aws.String("1"),
+			MessageBody: aws.String("Hello world - batch"),
+			MessageAttributes: map[string]types.MessageAttributeValue{
+				"Author": {
+					DataType:    aws.String("String"),
+					StringValue: aws.String("leedonggyu"),
+				},
+			},
+		},
+		{
+			Id:          aws.String("2"),
+			MessageBody: aws.String("Hello world - batch"),
+			MessageAttributes: map[string]types.MessageAttributeValue{
+				"Author": {
+					DataType:    aws.String("String"),
+					StringValue: aws.String("leedonggyu"),
+				},
+			},
+		},
+	}
+
+	url, _ := config.RetrieveQueue("ex-queue")
+	err := config.SendBatchMessage(url, msgAttr)
+
+	assert.Nil(t, err)
+}

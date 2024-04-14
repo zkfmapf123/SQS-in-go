@@ -79,6 +79,7 @@ func (config AWSConfig) RetrieveQueueProperty(queueName string) (string, error) 
 	return attr.Attributes[string(attrName)], nil
 }
 
+// types.MessageAttributeValue
 func (config AWSConfig) SendMessage(messageBody, queueURL string, attr map[string]types.MessageAttributeValue) error {
 
 	_, err := config.q.SendMessage(context.TODO(), &sqs.SendMessageInput{
@@ -86,6 +87,18 @@ func (config AWSConfig) SendMessage(messageBody, queueURL string, attr map[strin
 		MessageBody:       &messageBody,
 		MessageAttributes: attr,
 	})
+
+	return err
+}
+
+func (config AWSConfig) SendBatchMessage(queueUrl string, attr []types.SendMessageBatchRequestEntry) error {
+
+	req := &sqs.SendMessageBatchInput{
+		QueueUrl: &queueUrl,
+		Entries:  attr,
+	}
+
+	_, err := config.q.SendMessageBatch(context.TODO(), req)
 
 	return err
 }
