@@ -103,6 +103,10 @@ func (config AWSConfig) SendBatchMessage(queueUrl string, attr []types.SendMessa
 	return err
 }
 
+func (config AWSConfig) pollMessage() {
+
+}
+
 func (config AWSConfig) CreateQueue() {
 	// Terraform 으로 대체
 	// Queue, FIFO_Queue, DeadLetter Queue
